@@ -1,0 +1,12 @@
+js/app.js: OK
+js/pwa.js: OK
+service-worker.js: OK
+assets/logo.png: OK
+assets/icon-192.png: OK
+assets/icon-512.png: OK
+assets/apple-touch-icon.png: OK
+assets/telegram-cover.png: OK
+css/app.css: OK
+js/app.js: OK
+manifest.webmanifest: OK
+source: index_v0.17.html

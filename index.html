@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Metal OS / Welding OS v2.1-dev</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="apple-touch-icon" href="assets/logo.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#111111">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Metal OS">
+  <meta name="application-name" content="Metal OS">
+  <meta property="og:title" content="Metal OS | Сварка и расчёт">
+  <meta property="og:description" content="Расчёт металла, сметы, КП и схемы для сварщиков, монтажников и небольших металлоцехов.">
+  <meta property="og:image" content="assets/telegram-cover.png">
+  <link rel="stylesheet" href="css/app.css">
+
+</head>
+<body>
+<header>
+  <div class="head-inner">
+    <img src="assets/logo.png" alt="Metal OS" class="brand-logo">
+    <div class="brand-copy">
+      <h1>Metal OS / Welding OS</h1>
+      <div class="sub">v2.1-dev · расчёт + автосхема + фермы: навесы, перила, лестницы</div>
+    </div>
+  </div>
+</header>
+<div class="app">
+  <details id="helpDetails" class="help-block">
+    <summary>Как пользоваться · коротко</summary>
+    <div class="details-body">
+      <ol class="help-list">
+        <li>Выберите <b>тип изделия</b> и пресет (эконом / стандарт / усиленный).</li>
+        <li>Заполните <b>заказ</b> (необязательно) и <b>размеры</b> — это единственный обязательный шаг.</li>
+        <li>Проверьте <b>профили</b> и при необходимости <b>цены</b> (можно за хлыст, метр, кг или тонну — приложение само пересчитает).</li>
+        <li>Нажмите <b>«Рассчитать»</b> внизу экрана — получите металл, хлысты, вес, время и предварительную цену.</li>
+        <li>Часы по операциям можно <b>поправить вручную</b> — изменённое значение учтётся в цене и сроке.</li>
+        <li>Откройте <b>схему</b>, проверьте <b>риски</b>, затем нажмите <b>«КП»</b> — текст можно скопировать и отправить клиенту.</li>
+      </ol>
+      <p class="mini">Для перил угол наклона задаётся отдельным полем и работает для любого типа перил. Наценки можно задать в процентах или фиксированной суммой — переключатель рядом с полем.</p>
+      <p class="mini">Расчёт предварительный и не заменяет инженерное заключение для ответственных конструкций.</p>
+    </div>
+  </details>
+
+  <section class="card">
+    <h2>1. Тип изделия</h2>
+    <div class="type-grid" id="productChoices">
+      <button class="choice active" data-product="naves" type="button">Навес<small>стойки · балки · покрытие</small></button>
+      <button class="choice" data-product="perila" type="button">Перила<small>стойки · поручень · заполнение</small></button>
+      <button class="choice" data-product="lestnica" type="button">Лестница<small>косоуры · ступени · перила</small></button>
+    </div>
+    <h3>Пресет конструкции</h3>
+    <div class="preset-grid" id="presetChoices">
+      <button class="choice" data-preset="econom" type="button">Эконом<small>для простых размеров</small></button>
+      <button class="choice active" data-preset="standard" type="button">Стандарт<small>основной вариант</small></button>
+      <button class="choice" data-preset="strong" type="button">Усиленный<small>больше запас</small></button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>2. Заказ</h2>
+    <div class="grid2">
+      <div><label for="clientName">Клиент</label><input id="clientName" type="text" placeholder="Имя клиента"></div>
+      <div><label for="clientPhone">Телефон</label><input id="clientPhone" type="tel" placeholder="+7..."></div>
+    </div>
+    <label for="clientAddr">Адрес / объект</label><input id="clientAddr" type="text" placeholder="Коротко: где объект">
+    <label for="clientComment">Комментарий</label><textarea id="clientComment" placeholder="Особенности крепления, цвет, подъезд, демонтаж..."></textarea>
+    <label for="photoInput">Фото объекта</label><input id="photoInput" type="file" accept="image/*" class="no-print">
+    <img id="photoPreview" class="photo-preview" alt="Фото объекта">
+  </section>
+
+  <section class="card" id="paramsCard">
+    <h2>3. Размеры</h2>
+    <div id="paramsContainer"></div>
+    <div id="validationBox" class="validation" role="alert" aria-live="polite"><strong>Проверьте данные:</strong><ul id="validationList"></ul></div>
+  </section>
+
+  <section class="card">
+    <h2>4. Профили</h2>
+    <div id="profileSelects"></div>
+  </section>
+
+  <details id="trussDetails" class="card">
+    <summary>4A. Фермы навеса</summary>
+    <div class="details-body">
+      <p class="mini">Для навеса можно добавить несколько групп ферм: прямые, односкатные, двускатные, арочные, консольные или пользовательские. Расчёт ферм предварительный — для закупки металла и КП, не инженерное заключение.</p>
+      <div class="grid2">
+        <div>
+          <label for="trussEnabled">Учитывать фермы в расчёте</label>
+          <select id="trussEnabled">
+            <option value="no">Нет</option>
+            <option value="yes">Да</option>
+          </select>
+        </div>
+        <div>
+          <label for="trussDefaultProfile">Профиль по умолчанию</label>
+          <select id="trussDefaultProfile"></select>
+        </div>
+      </div>
+      <div id="trussGroupsContainer"></div>
+      <div class="truss-tools no-print">
+        <button class="btn secondary" type="button" id="addTrussGroupBtn">Добавить группу ферм</button>
+      </div>
+      <div class="note truss-warning">Арочные и сложные фермы считаются ориентировочно по длинам элементов. Несущая способность, снеговая и ветровая нагрузка требуют отдельной инженерной проверки.</div>
+    </div>
+  </details>
+
+  <section class="settings-intro">
+    <h2>Настройки расчёта</h2>
+    <p class="mini">Цены профилей, роли и оплата, наценки и расходники.</p>
+  </section>
+
+  <details id="pricesDetails">
+    <summary>5. Цены профилей</summary>
+    <div class="details-body">
+    <p class="mini">Цена может быть за хлыст 6 м, метр, кг или тонну. Приложение само пересчитает закупку.</p>
+    <div id="priceCards"></div>
+    <div class="top-actions no-print" style="margin-top:12px">
+      <button class="btn" type="button" id="saveSettingsBtn">Сохранить цены</button>
+      <button class="btn secondary" type="button" id="resetSettingsBtn">Сбросить</button>
+    </div>
+    <div id="settingsMsg" class="copy-msg"></div>
+    </div>
+  </details>
+
+  <details id="rolesDetails">
+    <summary>6. Работа, роли, оплата</summary>
+    <div class="details-body">
+    <p class="mini">По умолчанию включён только сварщик — это как «одна ставка» раньше. Включайте остальные роли галочкой, если нужно посчитать их отдельно.</p>
+    <div id="rolesContainer"></div>
+    <button type="button" class="btn secondary" id="resetRoleHoursBtn" style="margin-top:4px">Сбросить часы ролей к авто</button>
+    </div>
+  </details>
+
+  <details id="workDetails">
+    <summary>7. Наценки, расходники</summary>
+    <div class="details-body">
+    <div class="grid2">
+      <div>
+        <label for="materialMarkupValue">Наценка материалы</label>
+        <div class="markup-row">
+          <input id="materialMarkupValue" type="text" inputmode="decimal" min="0" step="1" value="30">
+          <select id="materialMarkupType"><option value="percent">%</option><option value="fixed">₽ фикс</option></select>
+        </div>
+      </div>
+      <div>
+        <label for="laborMarkupValue">Наценка работа</label>
+        <div class="markup-row">
+          <input id="laborMarkupValue" type="text" inputmode="decimal" min="0" step="1" value="20">
+          <select id="laborMarkupType"><option value="percent">%</option><option value="fixed">₽ фикс</option></select>
+        </div>
+      </div>
+      <div><label for="consumablesFixed">Расходники фикс, ₽</label><input id="consumablesFixed" type="text" inputmode="decimal" min="0" step="100" value="1500"></div>
+      <div><label for="consumablesRate">Расходники переменные</label><input id="consumablesRate" type="text" inputmode="decimal" min="0" step="10" value="120"></div>
+    </div>
+    <p id="consumablesHint" class="mini" style="margin-top:8px">Для навеса переменные расходники считаются за м².</p>
+    <p class="mini">«₽ фикс» — это фиксированная сумма наценки на весь заказ, а не за единицу.</p>
+    </div>
+  </details>
+
+  <section class="card" id="resultsCard">
+    <h2>8. Результат</h2>
+    <div class="price-hero"><small>Предварительная цена клиенту</small><strong id="clientPrice">—</strong></div>
+    <div class="metrics">
+      <div class="metric"><small>Металл нужен</small><strong id="totalNeeded">—</strong></div>
+      <div class="metric"><small>Хлысты 6 м</small><strong id="totalSticks">—</strong></div>
+      <div class="metric"><small>Остаток</small><strong id="totalLeftover">—</strong></div>
+      <div class="metric"><small>Расчётный вес металла (с запасом)</small><strong id="totalWeight">—</strong></div>
+      <div class="metric"><small>Часы</small><strong id="totalHours">—</strong></div>
+      <div class="metric"><small>Срок</small><strong id="totalDays">—</strong></div>
+    </div>
+    <div id="costBreakdown" class="cost-breakdown"></div>
+  </section>
+
+  <section class="card" id="schemeCard">
+    <h2>9. Схема по размерам</h2>
+    <p class="mini">Схема строится автоматически по введённым размерам. Это предварительная схема для понимания конструкции и согласования с клиентом, не инженерный чертёж.</p>
+    <div id="schemeContainer" class="scheme-wrap"><p class="mini">Нажмите «Рассчитать».</p></div>
+  </section>
+
+  <section class="card" id="specCard">
+    <h2>10. Закупка по профилям</h2>
+    <div id="purchaseList" class="section-list"><p class="mini">Нажмите «Рассчитать».</p></div>
+  </section>
+
+  <section class="card" id="timeCard">
+    <h2>11. Время по операциям</h2>
+    <div id="timeList" class="section-list"><p class="mini">Нажмите «Рассчитать».</p></div>
+  </section>
+
+  <section class="card" id="risksCard">
+    <h2>12. Риски и рекомендации</h2>
+    <div class="note">Предварительная проверка рисков. Не является инженерным заключением. Для ответственных конструкций нужен расчёт специалиста.</div>
+    <div id="riskList"><p class="mini">Нажмите «Рассчитать».</p></div>
+  </section>
+
+  <section class="card" id="quoteCard">
+    <h2>13. КП для клиента</h2>
+    <div id="quoteText" class="quote">Нажмите «Рассчитать», затем скопируйте КП.</div>
+    <div class="top-actions no-print">
+      <button class="btn" type="button" id="copyQuoteBtn">Скопировать КП</button>
+      <button class="btn secondary" type="button" id="printPdfBtn">Печать / PDF</button>
+    </div>
+    <p class="mini">В окне печати браузера выберите «Сохранить как PDF».</p>
+    <div id="copyMsg" class="copy-msg"></div>
+  </section>
+
+  <div class="footer">
+    Metal OS / Welding OS<br>
+    Версия: v2.1-dev · Статус: test MVP<br>
+    Дата сборки: 2026-06-27<br>
+    Расчёт предварительный и не заменяет инженерное заключение.<br>
+    <a class="telegram-link" href="https://t.me/metal_os" target="_blank" rel="noopener noreferrer" aria-label="Открыть Telegram-канал Metal OS">Telegram</a>
+  </div>
+</div>
+
+<div class="sticky-actions no-print">
+  <div class="inner">
+    <button class="btn" type="button" id="calcBtnBottom">Рассчитать</button>
+    <button class="btn secondary" type="button" id="jumpQuoteBtn">КП</button>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script src="js/pwa.js"></script>
+</body>
+</html>
