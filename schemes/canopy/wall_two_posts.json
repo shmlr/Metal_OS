@@ -1,0 +1,18 @@
+{
+  "id": "wall_two_posts",
+  "product": "canopy",
+  "title": "Стена + 2 стойки",
+  "description": "Классический пристенный навес с двумя передними стойками.",
+  "default_params": {
+    "post_count": 2,
+    "wall_side": "back",
+    "truss_type": "straight_parallel"
+  },
+  "required_params": [
+    "width",
+    "depth",
+    "height",
+    "profiles"
+  ],
+  "engineering_warning": ""
+}

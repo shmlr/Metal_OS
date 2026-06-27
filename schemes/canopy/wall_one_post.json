@@ -1,0 +1,18 @@
+{
+  "id": "wall_one_post",
+  "product": "canopy",
+  "title": "Стена + 1 стойка",
+  "description": "Навес с креплением к стене и одной передней стойкой.",
+  "default_params": {
+    "post_count": 1,
+    "wall_side": "back",
+    "truss_type": "cantilever"
+  },
+  "required_params": [
+    "width",
+    "depth",
+    "height",
+    "profiles"
+  ],
+  "engineering_warning": "Требуется проверка анкеров, стены, узла одинарной стойки и консольных ферм."
+}

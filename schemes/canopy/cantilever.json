@@ -1,0 +1,18 @@
+{
+  "id": "cantilever",
+  "product": "canopy",
+  "title": "Консольный",
+  "description": "Козырёк/навес без стоек, только крепление к стене.",
+  "default_params": {
+    "post_count": 0,
+    "wall_side": "back",
+    "truss_type": "cantilever"
+  },
+  "required_params": [
+    "width",
+    "depth",
+    "height",
+    "profiles"
+  ],
+  "engineering_warning": "Требуется инженерная проверка стены, анкеров и момента."
+}

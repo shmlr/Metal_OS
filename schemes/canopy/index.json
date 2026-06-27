@@ -1,0 +1,11 @@
+{
+  "product": "canopy",
+  "version": "2.0-dev",
+  "schemes": [
+    "wall_one_post",
+    "wall_two_posts",
+    "free_four_posts",
+    "between_walls",
+    "cantilever"
+  ]
+}

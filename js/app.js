@@ -472,12 +472,6 @@
     const t = TRUSS_WEB_PATTERNS.find(x=>x.key===key);
     return t ? t.label : key;
   }
-  function canopySchemeLabel(key){
-    if(key === 'wall_one_post') return 'Стена + 1 передняя стойка';
-    if(key === 'wall_two_posts') return 'Стена + 2 передние стойки';
-    if(key === 'free_posts') return 'Свободностоящий на стойках';
-    return 'Авто / обычная';
-  }
   function makeTrussId(){
     return 'truss_' + Date.now().toString(36) + '_' + Math.floor(Math.random()*1000);
   }
@@ -942,7 +936,6 @@
     if(height<=0) v.errors.push('Высота у края должна быть больше 0.');
     if(height2<=0){ v.warnings.push('Высота у стены не задана — принята равна высоте у края (плоская кровля).'); height2=height; }
     const wallSide = selectValue('wallSide','none');
-    const canopySchemeType = selectValue('canopySchemeType','auto');
     if(height2 < height){
       if(wallSide === 'none'){
         const tmp=height2; height2=height; height=tmp;
@@ -982,7 +975,7 @@
     // При примыкании к стене — стоек у стены меньше или нет (крепятся к стене)
     const crossCount = Math.ceil(depth / crossStep) + 1;
     const hasFrontPosts = wallSide === 'none' || wallSide === 'back';
-    const frontPostCount = (canopySchemeType === 'wall_one_post') ? 1 : Math.ceil(posts / 2);
+    const frontPostCount = hasFrontPosts ? Math.max(2, Math.round(posts / 2)) : Math.max(2, posts);
     const backPostCount  = (wallSide === 'none') ? Math.max(2, posts - frontPostCount) : 0;  // у стены — анкеры/пластины, не стойки
 
     const frontPostLen = frontPostCount * height;   // стойки у края (низкая сторона)
@@ -1012,14 +1005,6 @@
       groups = groups.concat(trussCalc.lines);
     }
     const rawLen = groups.reduce((s,g)=>s+g.length,0);
-    if(canopySchemeType === 'wall_one_post'){
-      groups.push({
-        label:'Одинарная опора: раскосы/усиление стойки',
-        profile: profileCross,
-        length: Math.max(1.5, height * 1.2 + width * 0.15)
-      });
-    }
-
     const purchase = calcPurchase(groups, waste);
     const coverNames = {polycarb:'поликарбонат', prof:'профнастил', metalTile:'металлочерепица'};
     const coverArea = width * rafterLen;  // площадь по скату, не в плане
@@ -1027,9 +1012,6 @@
     const time = makeTime(rawLen, area, { paint, mount, assembly:Math.max(2.5, area*0.25), paintHours:Math.max(2, area*0.35), mountHours:Math.max(4, area*0.55) });
 
     const risks = [];
-    if(canopySchemeType === 'wall_one_post'){
-      risks.push({level:'high', text:'Схема «стена + 1 стойка» требует проверки крепления к стене, узла одинарной стойки, анкеров и консольных ферм. Расчёт в приложении — закупочный и предварительный.'});
-    }
     if(trussCalc.enabled){
       if(trussCalc.groups.length){
         risks.push({level:'info', text:`Фермы навеса учтены в расчёте материалов: ${trussCalc.summary}. Расчёт предварительный.`});
@@ -1060,8 +1042,7 @@
     if(wallSide !== 'none') risks.push({level:'info', text:`Примыкание к стене (${wallSideLabel(wallSide)}): проверить материал стены, анкеровку пристенного прогона, герметизацию примыкания.`});
 
     return finalizeResult({ product:'Навес', validation:v,
-      params:{ width, depth, height, height2, posts, frontPostCount, backPostCount, crossStep, waste, roofAngleDeg, rafterLen, coverType, coverName:coverNames[coverType], coverArea, coverPrice, paint, mount, wallSide,
-      canopySchemeType, trussEnabled:trussCalc.enabled, trussGroups:trussCalc.groups, trussSummary:trussCalc.summary },
+      params:{ width, depth, height, height2, posts, frontPostCount, backPostCount, crossStep, waste, roofAngleDeg, rafterLen, coverType, coverName:coverNames[coverType], coverArea, coverPrice, paint, mount, wallSide, trussEnabled:trussCalc.enabled, trussGroups:trussCalc.groups, trussSummary:trussCalc.summary },
       groups, purchase, additionalMaterials:[{label:`Покрытие (${coverNames[coverType]})`, cost:coverCost, qty:`${fmt(coverArea,1)} м² по скату`}],
       time, risks, rawLen, basisValue:area, basisLabel:'м²' });
   }
@@ -1461,7 +1442,7 @@
     const postCount = Math.max(2, Math.round(p.posts || 4));
     const crossCount = Math.max(2, Math.ceil(D / Math.max(0.3, p.crossStep)) + 1);
     const actualPostCount = Math.max(2, (p.frontPostCount || 0) + (p.backPostCount || 0));
-    const postSchemeLabel = (p.canopySchemeType === 'wall_one_post') ? '1 передняя стойка + пристенное крепление' : wallSide === 'none'
+    const postSchemeLabel = wallSide === 'none'
       ? `стойки: ${actualPostCount}`
       : `стойки у края: ${p.frontPostCount || actualPostCount} + пристенный прогон`;
 

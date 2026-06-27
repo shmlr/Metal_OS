@@ -109,3 +109,12 @@
     @media(max-width:480px){.telegram-link{width:100%;margin-top:8px}}
     @media(max-width:380px){.metrics,.line-grid,.grid2-always{grid-template-columns:1fr}h1{font-size:20px}input,select,textarea,button{font-size:15px;padding:11px}.sticky-actions .inner{grid-template-columns:1fr}}
     @media print{body{background:#fff;padding:0}.sticky-actions,header,.no-print{display:none!important}.card{box-shadow:none;border-color:#ddd;break-inside:avoid}.app{max-width:none}.quote{max-height:none;color:#111;background:#fff;border:1px solid #ddd}}
+
+.scheme-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.scheme-choice{display:flex;align-items:center;gap:12px;text-align:left;border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px;cursor:pointer}
+.scheme-choice.active{border-color:#111;background:#111;color:#fff}
+.scheme-choice-icon{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;background:var(--card2);font-weight:900;font-size:22px;color:#e95b20;flex:0 0 auto}
+.scheme-choice.active .scheme-choice-icon{background:#242424;color:#ff7a00}
+.scheme-choice b{display:block;font-size:14px}
+.scheme-choice small{display:block;font-size:12px;opacity:.75;line-height:1.3;margin-top:3px}
+@media(max-width:560px){.scheme-choice-grid{grid-template-columns:1fr}}

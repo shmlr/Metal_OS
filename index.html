@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Metal OS / Welding OS v2.1-dev</title>
+  <title>Metal OS / Welding OS v2.0-schemes-dev</title>
   <link rel="icon" type="image/png" href="assets/logo.png">
   <link rel="apple-touch-icon" href="assets/logo.png">
   <link rel="manifest" href="manifest.webmanifest">
@@ -27,7 +27,7 @@
     <img src="assets/logo.png" alt="Metal OS" class="brand-logo">
     <div class="brand-copy">
       <h1>Metal OS / Welding OS</h1>
-      <div class="sub">v2.1-dev · расчёт + автосхема + фермы: навесы, перила, лестницы</div>
+      <div class="sub">v2.0-schemes-dev · расчёт + автосхема + фермы: навесы, перила, лестницы</div>
     </div>
   </div>
 </header>
@@ -73,6 +73,14 @@
     <label for="clientComment">Комментарий</label><textarea id="clientComment" placeholder="Особенности крепления, цвет, подъезд, демонтаж..."></textarea>
     <label for="photoInput">Фото объекта</label><input id="photoInput" type="file" accept="image/*" class="no-print">
     <img id="photoPreview" class="photo-preview" alt="Фото объекта">
+  </section>
+
+
+  <section class="card" id="schemeConstructorCard">
+    <h2>2A. Конструкция навеса</h2>
+    <p class="mini">Сначала выберите реальную схему опирания. Это основа Metal OS 2.0: расчёт начинается от конструкции, а не только от количества стоек.</p>
+    <div id="schemeConstructor" class="scheme-choice-grid"></div>
+    <div id="schemeConstructorWarning" class="note" style="margin-top:10px">Выберите схему, если навес нестандартный: например, стена + 1 стойка.</div>
   </section>
 
   <section class="card" id="paramsCard">
@@ -213,7 +221,7 @@
 
   <div class="footer">
     Metal OS / Welding OS<br>
-    Версия: v2.1-dev · Статус: test MVP<br>
+    Версия: v2.0-schemes-dev · Статус: test MVP<br>
     Дата сборки: 2026-06-27<br>
     Расчёт предварительный и не заменяет инженерное заключение.<br>
     <a class="telegram-link" href="https://t.me/metal_os" target="_blank" rel="noopener noreferrer" aria-label="Открыть Telegram-канал Metal OS">Telegram</a>
@@ -228,6 +236,7 @@
 </div>
 
 <script src="js/app.js"></script>
+<script src="js/scheme-constructor.js"></script>
 <script src="js/pwa.js"></script>
 </body>
 </html>

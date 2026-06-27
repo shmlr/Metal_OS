@@ -1,0 +1,18 @@
+{
+  "id": "free_four_posts",
+  "product": "canopy",
+  "title": "4 стойки",
+  "description": "Свободностоящий навес на четырёх стойках.",
+  "default_params": {
+    "post_count": 4,
+    "wall_side": "none",
+    "truss_type": "straight_parallel"
+  },
+  "required_params": [
+    "width",
+    "depth",
+    "height",
+    "profiles"
+  ],
+  "engineering_warning": ""
+}

@@ -1,0 +1,18 @@
+{
+  "id": "between_walls",
+  "product": "canopy",
+  "title": "Между двумя стенами",
+  "description": "Навес между двумя стенами/колоннами без передних стоек.",
+  "default_params": {
+    "post_count": 0,
+    "wall_side": "both",
+    "truss_type": "straight_parallel"
+  },
+  "required_params": [
+    "width",
+    "depth",
+    "height",
+    "profiles"
+  ],
+  "engineering_warning": "Проверьте боковые стены/колонны и анкера."
+}
